@@ -1,0 +1,29 @@
+{
+  "name": "@little-saga/rx-hooks",
+  "version": "1.0.0-beta.1",
+  "description": "RxJS hooks for React and its friends.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/little-saga/use-cool-rx.git",
+  "author": "feichao.sfc <feichao.sfc@alibaba-inc.com>",
+  "license": "ISC",
+  "sideEffects": false,
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc",
+    "prepublishOnly": "rimraf dist/ && yarn build"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "react": "^16.9.0",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "immer": "^4.0.0",
+    "rxjs": "^6.5.3"
+  }
+}
