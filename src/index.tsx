@@ -52,7 +52,7 @@ export type Story<S, D, E> = (
   teardown?(): void
 }
 
-export function useRxStory<S, D, E>(
+export function useStory<S extends object, D, E>(
   story: Story<S, D, E>,
   initialState: S | (() => S),
 ): readonly [S & D, E] {
