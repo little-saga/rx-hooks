@@ -8,6 +8,9 @@
   "author": "feichao.sfc <feichao.sfc@alibaba-inc.com>",
   "license": "ISC",
   "sideEffects": false,
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "start": "tsc --watch",
     "build": "tsc",
