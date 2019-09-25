@@ -13,7 +13,7 @@ import {
 import { map, tap, withLatestFrom } from 'rxjs/operators'
 
 /** 打印 observable 中流过的值 */
-export function printValue<V>(label: string, style = 'background: #222; color: #bada55') {
+export function log<V>(label: string, style = 'background: #222; color: #bada55') {
   return pipe(tap<V>(v => console.log(`%c${label}`, style, v)))
 }
 
