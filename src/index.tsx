@@ -13,7 +13,7 @@ import {
 import { map, tap, withLatestFrom } from 'rxjs/operators'
 
 /** 打印 observable 中流过的值 */
-export function print<V>(label: string, style = "background: #222; color: #bada55") {
+export function printValue<V>(label: string, style = 'background: #222; color: #bada55') {
   return pipe(tap<V>(v => console.log(`%c${label}`, style, v)))
 }
 
@@ -43,7 +43,7 @@ function useBehaviorSubject<S>(initialState: S) {
   return useMemo(() => new BehaviorSubject<S>(initialState), [])
 }
 
-export type Story<S, D, E> = (
+export type Fiction<S, D, E> = (
   state$: Observable<S>,
 ) => {
   nextState?: Observable<S>
@@ -52,8 +52,8 @@ export type Story<S, D, E> = (
   teardown?(): void
 }
 
-export function useStory<S extends object, D, E>(
-  story: Story<S, D, E>,
+export function useFiction<S extends object, D, E>(
+  fiction: Fiction<S, D, E>,
   initialState: S | (() => S),
 ): readonly [S & D, E] {
   const [state, setState] = useState(initialState)
@@ -68,7 +68,7 @@ export function useStory<S extends object, D, E>(
 
   // 用 useMemo 来同步地执行 story 与订阅 derived$，防止 derived 的初始值丢失
   useMemo(() => {
-    const { derived: derived$, exports, nextState: nextState$, teardown } = story(state$)
+    const { derived: derived$, exports, nextState: nextState$, teardown } = fiction(state$)
     exportsRef.current = exports
     ref.current.teardown = teardown
     if (derived$) {
