@@ -128,7 +128,7 @@ export function combineLatestFromObject<T extends { [key: string]: Observable<an
   ) as any
 }
 
-type RxNovel<P extends object, S extends object, D, E> = (
+export type RxNovel<P extends object, S extends object, D, E> = (
   props$: Observable<P>,
   state$: Observable<S>,
 ) => {
@@ -137,7 +137,7 @@ type RxNovel<P extends object, S extends object, D, E> = (
   exports?: E
   teardown?(): void
 }
-function useRxNovel<P extends object, S extends object, D, E>(
+export function useRxNovel<P extends object, S extends object, D, E>(
   props: P,
   getInitState: (props: P) => S,
   novel: RxNovel<P, S, D, E>,
