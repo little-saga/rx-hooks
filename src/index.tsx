@@ -127,3 +127,21 @@ export function combineLatestFromObject<T extends { [key: string]: Observable<an
     map(values => Object.fromEntries(values.map((v, i) => [keys[i], v]))),
   ) as any
 }
+
+type RxNovel<P extends object, S extends object, D, E> = (
+  props$: Observable<P>,
+  state$: Observable<S>,
+) => {
+  nextState?: Observable<S>
+  derived?: Observable<D>
+  exports?: E
+  teardown?(): void
+}
+function useRxNovel<P extends object, S extends object, D, E>(
+  props: P,
+  getInitState: (props: P) => S,
+  novel: RxNovel<P, S, D, E>,
+) {
+  const props$ = useMimicBehaviorSubject(props)
+  return useFiction(state$ => novel(props$, state$), () => getInitState(props))
+}
