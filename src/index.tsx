@@ -158,7 +158,7 @@ export class SubjectProxy<T> extends Subject<T> {
     super()
   }
 
-  collect(input$: Observable<T>) {
-    this.subscription.add(input$.subscribe(this))
+  imitate(target$: Observable<T>) {
+    this.subscription.add(target$.subscribe(this))
   }
 }
