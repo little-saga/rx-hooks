@@ -10,7 +10,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs'
-import { map, tap, withLatestFrom } from 'rxjs/operators'
+import { distinct, map, tap, withLatestFrom } from 'rxjs/operators'
 
 /** 打印 observable 中流过的值 */
 export function log<V>(label: string, style = 'background: #222; color: #bada55') {
@@ -144,4 +144,21 @@ export function useRxNovel<P extends object, S extends object, D, E>(
 ) {
   const props$ = useMimicBehaviorSubject(props)
   return useFiction(state$ => novel(props$, state$), () => getInitState(props))
+}
+
+export function distinctMap<T, R>(project: (value: T, index: number) => R): OperatorFunction<T, R> {
+  return pipe(
+    map(project),
+    distinct(),
+  )
+}
+
+export class SubjectProxy<T> extends Subject<T> {
+  constructor(readonly subscription: Subscription) {
+    super()
+  }
+
+  collect(input$: Observable<T>) {
+    this.subscription.add(input$.subscribe(this))
+  }
 }
