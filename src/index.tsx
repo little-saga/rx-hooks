@@ -162,3 +162,45 @@ export class SubjectProxy<T> extends Subject<T> {
     this.subscription.add(target$.subscribe(this))
   }
 }
+
+export function isEqual<T>(obj1: T, obj2: T, deep = false) {
+  if (obj1 === obj2) {
+    return true
+  }
+
+  if (obj1 == null || obj2 == null) {
+    return false
+  }
+
+  if (Array.isArray(obj1)) {
+    if (!Array.isArray(obj2)) {
+      return false
+    }
+    if (obj1.length !== obj2.length) {
+      return false
+    }
+    for (let i = 0; i < obj1.length; i++) {
+      if (deep && !isEqual(obj1[i], obj2[i], deep)) {
+        return false
+      }
+      if (!deep && obj1[i] !== obj2[i]) {
+        return false
+      }
+    }
+    return true
+  }
+
+  for (const key of Object.keys(obj1)) {
+    if (deep && !isEqual(obj1[key], obj2[key], deep)) {
+      return false
+    }
+    if (!deep && obj1[key] !== obj2[key]) {
+      return false
+    }
+  }
+  return true
+}
+
+export function isDeepEqual(obj1: any, obj2: any) {
+  return isEqual(obj1, obj2, true)
+}
