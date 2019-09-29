@@ -201,6 +201,8 @@ export function isEqual<T>(obj1: T, obj2: T, deep = false) {
   return true
 }
 
-export function isDeepEqual(obj1: any, obj2: any) {
+export const shallowEqual = isEqual
+
+export function deepEqual<T>(obj1: T, obj2: T) {
   return isEqual(obj1, obj2, true)
 }
