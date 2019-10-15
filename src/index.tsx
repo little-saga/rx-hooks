@@ -10,11 +10,21 @@ import {
   Subject,
   Subscription,
 } from 'rxjs'
-import { distinct, map, tap, withLatestFrom } from 'rxjs/operators'
+import { distinct, filter, map, tap, withLatestFrom } from 'rxjs/operators'
 
 /** 打印 observable 中流过的值 */
 export function log<V>(label: string, style = 'background: #222; color: #bada55') {
   return pipe(tap<V>(v => console.log(`%c${label}`, style, v)))
+}
+
+export type OfType<AC extends { type: string }, TYPE extends AC['type']> = AC extends { type: TYPE }
+  ? AC
+  : never
+/** 根据 type 字段过滤 action */
+function ofType<T extends { type: string }, TYPE extends T['type'], R extends OfType<T, TYPE>>(
+  type: TYPE,
+) {
+  return filter((action): action is R => action.type === type) as OperatorFunction<T, R>
 }
 
 /** 从变化的 value 中创建一个 BehaviorSubject
@@ -87,16 +97,15 @@ export function useFiction<S extends object, D, E>(
   useEffect(() => {
     return () => {
       const { derivationSubscription, nextStateSubscription, teardown } = ref.current
+      state$.complete()
+      if (teardown) {
+        teardown()
+      }
       if (derivationSubscription) {
         derivationSubscription.unsubscribe()
       }
       if (nextStateSubscription) {
         nextStateSubscription.unsubscribe()
-      }
-
-      state$.complete()
-      if (teardown) {
-        teardown()
       }
     }
   }, [])
@@ -163,7 +172,7 @@ export class SubjectProxy<T> extends Subject<T> {
   }
 }
 
-export function isEqual<T>(obj1: T, obj2: T, deep = false) {
+function isEqual<T>(obj1: T, obj2: T, deep = false) {
   if (obj1 === obj2) {
     return true
   }
