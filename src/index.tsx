@@ -21,7 +21,7 @@ export type OfType<AC extends { type: string }, TYPE extends AC['type']> = AC ex
   ? AC
   : never
 /** 根据 type 字段过滤 action */
-function ofType<T extends { type: string }, TYPE extends T['type'], R extends OfType<T, TYPE>>(
+export function ofType<T extends { type: string }, TYPE extends T['type'], R extends OfType<T, TYPE>>(
   type: TYPE,
 ) {
   return filter((action): action is R => action.type === type) as OperatorFunction<T, R>
