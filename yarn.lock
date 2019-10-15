@@ -156,10 +156,10 @@ tslib@^1.9.0:
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha1-w8GflZc/sKYpc/sJ2Q2WHuQ+XIo=
 
-typescript@^3.6.3:
-  version "3.6.3"
-  resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.6.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
-  integrity sha1-/qlC+rsg9+HKcWT/Ym8anz9wtNo=
+typescript@^3.7.0-beta:
+  version "3.7.0-beta"
+  resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.7.0-beta.tgz?cache=0&sync_timestamp=1571206721446&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.7.0-beta.tgz#4ad556e0eee14b90ecc39261001690e16e5eeba9"
+  integrity sha1-StVW4O7hS5Dsw5JhABaQ4W5e66k=
 
 wrappy@1:
   version "1.0.2"

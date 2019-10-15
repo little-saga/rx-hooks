@@ -1,6 +1,6 @@
 {
   "name": "@little-saga/rx-hooks",
-  "version": "1.7.0",
+  "version": "2.0.0-beta",
   "description": "RxJS hooks for React and its friends.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
     "@types/react": "^16.9.2",
     "react": "^16.9.0",
     "rimraf": "^3.0.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.0-beta"
   },
   "dependencies": {
     "immer": "^4.0.0",
