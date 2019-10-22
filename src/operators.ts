@@ -47,10 +47,3 @@ export function combineLatestFromObject<T extends { [key: string]: Observable<an
     map(values => Object.fromEntries(values.map((v, i) => [keys[i], v]))),
   ) as any
 }
-
-export function distinctMap<T, R>(project: (value: T, index: number) => R): OperatorFunction<T, R> {
-  return pipe(
-    map(project),
-    distinct(),
-  )
-}

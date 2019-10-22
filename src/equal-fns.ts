@@ -2,11 +2,17 @@ function isEqual<T>(obj1: T, obj2: T, deep: boolean) {
   // 处理基本类型
   if (
     typeof obj1 === 'number' ||
+    typeof obj2 === 'number' ||
     typeof obj1 === 'string' ||
+    typeof obj2 === 'string' ||
     typeof obj1 === 'bigint' ||
+    typeof obj2 === 'bigint' ||
     typeof obj1 === 'boolean' ||
+    typeof obj2 === 'boolean' ||
     typeof obj1 === 'function' ||
-    typeof obj1 === 'symbol'
+    typeof obj2 === 'function' ||
+    typeof obj1 === 'symbol' ||
+    typeof obj2 === 'symbol'
   ) {
     return obj1 === obj2
   }
@@ -36,7 +42,12 @@ function isEqual<T>(obj1: T, obj2: T, deep: boolean) {
   }
 
   // 普通对象
-  for (const key of Object.keys(obj1)) {
+  const obj1Keys = Object.keys(obj1)
+  const obj2Keys = Object.keys(obj2)
+  if (obj1Keys.length !== obj2Keys.length) {
+    return false
+  }
+  for (const key of obj1Keys) {
     if (deep && !isEqual(obj1[key], obj2[key], deep)) {
       return false
     }

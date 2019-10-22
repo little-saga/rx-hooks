@@ -14,15 +14,22 @@
   "scripts": {
     "start": "tsc --watch",
     "build": "tsc",
-    "prepublishOnly": "rimraf dist/ && yarn build"
+    "test": "jest",
+    "prepublishOnly": "yarn test && rimraf dist/ && yarn build"
   },
   "peerDependencies": {
-    "react": "^16.9.0"
+    "react": "^16.10.2"
+  },
+  "jest": {
+    "preset": "ts-jest"
   },
   "devDependencies": {
-    "@types/react": "^16.9.2",
-    "react": "^16.9.0",
+    "@types/jest": "^24.0.19",
+    "@types/react": "^16.9.9",
+    "jest": "^24.9.0",
+    "react": "^16.10.2",
     "rimraf": "^3.0.0",
+    "ts-jest": "^24.1.0",
     "typescript": "^3.7.0-beta"
   },
   "dependencies": {
