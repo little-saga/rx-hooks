@@ -24,16 +24,15 @@
     "preset": "ts-jest",
     "rootDir": "src",
     "coverageDirectory": "../coverage",
-    "collectCoverageFrom": [
-      "*"
-    ],
     "collectCoverage": true
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^3.1.0",
     "@types/jest": "^24.0.19",
     "@types/react": "^16.9.11",
     "jest": "^24.9.0",
     "react": "^16.11.0",
+    "react-test-renderer": "^16.11.0",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.7.0-beta"

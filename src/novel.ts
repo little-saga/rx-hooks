@@ -65,10 +65,12 @@ export function useNovel<I, S extends object, D extends object, E>(
         let syncEmittedValue: D | typeof NO_VALUE = NO_VALUE
         ref.current.deriveSub = output.derived.subscribe(value => {
           derivedValueRef.current = value
+          /* istanbul ignore else */
           if (process.env.NODE_ENV !== 'production') {
             syncEmittedValue = value
           }
         })
+        /* istanbul ignore else */
         if (process.env.NODE_ENV !== 'production') {
           if (syncEmittedValue === NO_VALUE) {
             throw new Error('derived$ must synchronously emit a value.')
