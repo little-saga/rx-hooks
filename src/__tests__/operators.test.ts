@@ -1,7 +1,8 @@
-import { from } from 'rxjs'
+import { BehaviorSubject, from } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { TestScheduler } from 'rxjs/testing'
-import { ofType, combineLatestFromObject } from '../operators'
+import { applyMutatorAsReducer, combineLatestFromObject, ofType } from '../operators'
+
 
 describe('ofType operator', () => {
   const testScheduler = new TestScheduler((actual, expected) => {
@@ -54,6 +55,37 @@ describe('combineLatestFromObject operator', () => {
   })
 })
 
-// todo
-// describe('applyMutatorAsReducer operator', () => {
-// })
+describe('applyMutatorAsReducer operator', () => {
+  const testScheduler = new TestScheduler((actual, expected) => {
+    expect(actual).toEqual(expected)
+  })
+
+  test('applyMutatorAsReducer for simple counter', () => {
+    testScheduler.run(({ expectObservable, cold }) => {
+      const state$ = new BehaviorSubject({ count: 0 })
+      const action$ = cold('-iii-dd-r-i', { i: 'inc', d: 'dec', r: 'reset' })
+      //////////////////////0123-21-0-1
+      const nextState$ = action$.pipe(
+        applyMutatorAsReducer(state$, (draft, action) => {
+          if (action === 'inc') {
+            draft.count += 1
+          } else if (action === 'dec') {
+            draft.count -= 1
+          } else if (action === 'reset') {
+            draft.count = 0
+          } else {
+            throw new Error('invalid action')
+          }
+        }),
+      )
+      nextState$.subscribe(state$)
+
+      expectObservable(state$).toBe('0123-21-0-1', {
+        0: { count: 0 },
+        1: { count: 1 },
+        2: { count: 2 },
+        3: { count: 3 },
+      })
+    })
+  })
+})

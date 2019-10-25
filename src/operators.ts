@@ -1,6 +1,6 @@
 import produce, { Draft } from 'immer'
 import { combineLatest, Observable, ObservedValueOf, OperatorFunction, pipe } from 'rxjs'
-import { distinct, filter, map, tap, withLatestFrom } from 'rxjs/operators'
+import { filter, map, tap, withLatestFrom } from 'rxjs/operators'
 
 /** 打印 observable 中流过的值 */
 export function log<V>(label: string, style = 'background: #222; color: #bada55') {
@@ -40,9 +40,13 @@ export function applyMutatorAsReducer<S, A>(
 
 export function combineLatestFromObject<T extends { [key: string]: Observable<any> }>(
   dict: T,
+  debug = false,
 ): Observable<{ [key in keyof T]: ObservedValueOf<T[key]> }> {
   const keys = Object.keys(dict)
-  const observables = Object.values(dict)
+  let observables = Object.values(dict)
+  if (debug) {
+    observables = observables.map((obs, i) => obs.pipe(log(keys[i])))
+  }
   return combineLatest(observables).pipe(
     map(values => Object.fromEntries(values.map((v, i) => [keys[i], v]))),
   ) as any

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BehaviorSubject, isObservable, Observable, Subscription } from 'rxjs'
 
-export type RxNovel<I, S extends object, D extends object, E> = (
+const NO_VALUE = Symbol('no-value')
+
+export type Novel<I, S extends object, D extends object, E> = (
   input$: Observable<I>,
   state$: Observable<S>,
 ) =>
@@ -13,10 +15,10 @@ export type RxNovel<I, S extends object, D extends object, E> = (
       teardown?(): void
     }
 
-export function useRxNovel<I, S extends object, D extends object, E>(
+export function useNovel<I, S extends object, D extends object, E>(
   input: I,
-  initialState: S | (() => S),
-  novel: RxNovel<I, S, D, E>,
+  initialState: S,
+  novel: Novel<I, S, D, E>,
 ) {
   const [state, setState] = useState(initialState)
   const input$ = useMemo(() => new BehaviorSubject(input), [])
@@ -46,7 +48,9 @@ export function useRxNovel<I, S extends object, D extends object, E>(
     const output = novel(input$, state$)
     if (output == null) {
       return
-    } else if (isObservable(output)) {
+    }
+
+    if (isObservable(output)) {
       ref.current.stateSub = output.subscribe(value => {
         state$.next(value)
         setState(value)
@@ -57,9 +61,20 @@ export function useRxNovel<I, S extends object, D extends object, E>(
         state$.next(value)
         setState(value)
       })
-      ref.current.deriveSub = output.derived?.subscribe(value => {
-        derivedValueRef.current = value
-      })
+      if (output.derived) {
+        let syncEmittedValue: D | typeof NO_VALUE = NO_VALUE
+        ref.current.deriveSub = output.derived.subscribe(value => {
+          derivedValueRef.current = value
+          if (process.env.NODE_ENV !== 'production') {
+            syncEmittedValue = value
+          }
+        })
+        if (process.env.NODE_ENV !== 'production') {
+          if (syncEmittedValue === NO_VALUE) {
+            throw new Error('derived$ must synchronously emit a value.')
+          }
+        }
+      }
       ref.current.teardown = output.teardown
       exportsRef.current = output.exports
     }
