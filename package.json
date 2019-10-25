@@ -14,8 +14,9 @@
   "scripts": {
     "start": "tsc --watch",
     "build": "tsc",
-    "test": "jest",
-    "prepublishOnly": "yarn test && rimraf dist/ && yarn build"
+    "test-only": "cross-env NODE_ENV=development jest --coverage",
+    "test": "yarn test-only && cat ./coverage/lcov.info | coveralls",
+    "prepublishOnly": "yarn test-only && rimraf dist/ && yarn build"
   },
   "peerDependencies": {
     "react": "^16.10.2"
@@ -30,6 +31,8 @@
     "@testing-library/react-hooks": "^3.1.0",
     "@types/jest": "^24.0.19",
     "@types/react": "^16.9.11",
+    "coveralls": "^3.0.7",
+    "cross-env": "^6.0.3",
     "jest": "^24.9.0",
     "react": "^16.11.0",
     "react-test-renderer": "^16.11.0",
