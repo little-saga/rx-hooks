@@ -45,7 +45,7 @@ export function useNovel<I, S extends object, D extends object, E>(
 
   // 用 useMemo 来同步地执行 novel 与订阅 derived$，防止 derived 的初始值丢失
   useMemo(() => {
-    const output = novel(input$, state$)
+    const output = novel(input$.asObservable(), state$.asObservable())
     if (output == null) {
       return
     }
@@ -56,7 +56,6 @@ export function useNovel<I, S extends object, D extends object, E>(
         setState(value)
       })
     } else {
-      // 注意这里 ?. 操作符的使用
       ref.current.stateSub = output.nextState?.subscribe(value => {
         state$.next(value)
         setState(value)
@@ -85,7 +84,6 @@ export function useNovel<I, S extends object, D extends object, E>(
   useEffect(() => {
     return () => {
       state$.complete()
-      // 注意这里 ?. 操作符的使用
       ref.current.teardown?.()
       ref.current.deriveSub?.unsubscribe()
       ref.current.stateSub?.unsubscribe()

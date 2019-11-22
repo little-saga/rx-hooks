@@ -1,6 +1,6 @@
 {
   "name": "@little-saga/rx-hooks",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "RxJS hooks for React and its friends.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,22 +28,22 @@
     "collectCoverage": true
   },
   "devDependencies": {
-    "@testing-library/react-hooks": "^3.1.0",
-    "@types/jest": "^24.0.19",
+    "@testing-library/react-hooks": "^3.2.1",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.11",
     "@types/react": "^16.9.11",
-    "coveralls": "^3.0.7",
+    "coveralls": "^3.0.8",
     "cross-env": "^6.0.3",
     "jest": "^24.9.0",
-    "react": "^16.11.0",
-    "react-test-renderer": "^16.11.0",
+    "prettier": "^1.19.1",
+    "react-test-renderer": "^16.12.0",
     "rimraf": "^3.0.0",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.7.0-beta"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@types/node": "^12.11.7",
-    "immer": "^4.0.2",
-    "prettier": "^1.18.2",
+    "immer": "3 || 4 || 5",
+    "react": "^16.12.0",
     "rxjs": "^6.5.3"
   },
   "prettier": {
