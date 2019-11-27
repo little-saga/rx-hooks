@@ -2,13 +2,14 @@ import { act, renderHook } from '@testing-library/react-hooks'
 import { combineLatest, interval, isObservable, NEVER, Observable, Subscription } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 import { SubjectProxy } from '../helpers'
+import { StateObservable } from '../index'
 import { useNovel } from '../novel'
 import { applyMutatorAsReducer } from '../operators'
 
 describe('simpleCounterNovel', () => {
   function simpleCounterNovel(
-    input$: Observable<{ initCount: number }>,
-    state$: Observable<{ count: number }>,
+    input$: StateObservable<{ initCount: number }>,
+    state$: StateObservable<{ count: number }>,
   ) {
     const subscription = new Subscription()
     const actionProxy$ = new SubjectProxy<string>(subscription)

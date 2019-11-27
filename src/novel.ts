@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BehaviorSubject, isObservable, Observable, Subscription } from 'rxjs'
+import { isObservable, Observable, Subject, Subscription } from 'rxjs'
+import StateObservable from './StateObservable'
 
 const NO_VALUE = Symbol('no-value')
 
 export type Novel<I, S extends object, D extends object, E> = (
-  input$: Observable<I>,
-  state$: Observable<S>,
+  input$: StateObservable<I>,
+  state$: StateObservable<S>,
 ) =>
   | Observable<S>
   | {
@@ -21,8 +22,8 @@ export function useNovel<I, S extends object, D extends object, E>(
   novel: Novel<I, S, D, E>,
 ) {
   const [state, setState] = useState(initialState)
-  const input$ = useMemo(() => new BehaviorSubject(input), [])
-  const state$ = useMemo(() => new BehaviorSubject(state), [])
+  const input$ = useMemo(() => new Subject<I>(), [])
+  const state$ = useMemo(() => new Subject<S>(), [])
 
   // 每次渲染之后更新 input$
   const mount = useRef(true)
@@ -37,38 +38,43 @@ export function useNovel<I, S extends object, D extends object, E>(
 
   const derivedValueRef = useRef<D>(null)
   const exportsRef = useRef<E>(null)
-  const ref = useRef<{
-    deriveSub: Subscription
-    stateSub: Subscription
-    teardown?(): void
-  }>({} as any)
+  const subscription = useMemo(() => new Subscription(), [])
 
   // 用 useMemo 来同步地执行 novel 与订阅 derived$，防止 derived 的初始值丢失
   useMemo(() => {
-    const output = novel(input$.asObservable(), state$.asObservable())
+    const output = novel(
+      new StateObservable(input$, input),
+      new StateObservable(state$, initialState),
+    )
     if (output == null) {
       return
     }
 
     if (isObservable(output)) {
-      ref.current.stateSub = output.subscribe(value => {
-        state$.next(value)
-        setState(value)
-      })
+      subscription.add(
+        output.subscribe(value => {
+          state$.next(value)
+          setState(value)
+        }),
+      )
     } else {
-      ref.current.stateSub = output.nextState?.subscribe(value => {
-        state$.next(value)
-        setState(value)
-      })
+      subscription.add(
+        output.nextState?.subscribe(value => {
+          state$.next(value)
+          setState(value)
+        }),
+      )
       if (output.derived) {
         let syncEmittedValue: D | typeof NO_VALUE = NO_VALUE
-        ref.current.deriveSub = output.derived.subscribe(value => {
-          derivedValueRef.current = value
-          /* istanbul ignore else */
-          if (process.env.NODE_ENV !== 'production') {
-            syncEmittedValue = value
-          }
-        })
+        subscription.add(
+          output.derived.subscribe(value => {
+            derivedValueRef.current = value
+            /* istanbul ignore else */
+            if (process.env.NODE_ENV !== 'production') {
+              syncEmittedValue = value
+            }
+          }),
+        )
         /* istanbul ignore else */
         if (process.env.NODE_ENV !== 'production') {
           if (syncEmittedValue === NO_VALUE) {
@@ -76,17 +82,14 @@ export function useNovel<I, S extends object, D extends object, E>(
           }
         }
       }
-      ref.current.teardown = output.teardown
+      subscription.add(output.teardown)
       exportsRef.current = output.exports
     }
   }, [])
 
   useEffect(() => {
     return () => {
-      state$.complete()
-      ref.current.teardown?.()
-      ref.current.deriveSub?.unsubscribe()
-      ref.current.stateSub?.unsubscribe()
+      subscription.unsubscribe()
     }
   }, [])
 
