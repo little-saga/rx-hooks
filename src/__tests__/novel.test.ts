@@ -3,7 +3,7 @@ import { combineLatest, interval, isObservable, NEVER, Observable, Subscription 
 import { map, startWith, switchMap } from 'rxjs/operators'
 import { SubjectProxy } from '../helpers'
 import { StateObservable } from '../index'
-import { useNovel } from '../novel'
+import { useMemoNovel } from '../memo-novel'
 import { applyMutatorAsReducer } from '../operators'
 
 describe('simpleCounterNovel', () => {
@@ -45,7 +45,7 @@ describe('simpleCounterNovel', () => {
   test('simple inc/dec/reset case', () => {
     const { result } = renderHook(
       ({ initCount }: { initCount: number }) =>
-        useNovel({ initCount }, { count: 0 }, simpleCounterNovel),
+        useMemoNovel({ initCount }, { count: 0 }, simpleCounterNovel),
       { initialProps: { initCount: 0 } },
     )
 
@@ -76,7 +76,7 @@ describe('simpleCounterNovel', () => {
   test('derived and exports', () => {
     const { result } = renderHook(
       ({ initCount }: { initCount: number }) =>
-        useNovel({ initCount }, { count: 0 }, simpleCounterNovel),
+        useMemoNovel({ initCount }, { count: 0 }, simpleCounterNovel),
       { initialProps: { initCount: 0 } },
     )
 
@@ -106,7 +106,7 @@ test('derived$ not emitting a value synchronously should throw', () => {
     }
   }
 
-  const { result } = renderHook(() => useNovel(null, null, flawNovel))
+  const { result } = renderHook(() => useMemoNovel(null, null, flawNovel))
 
   expect(result.error.message).toMatch('derived$ must synchronously emit a value.')
 })
@@ -128,7 +128,7 @@ test('novel directly return nextState$ and novel should unsubscribe when unmount
   }
 
   const { result, unmount, waitForNextUpdate } = renderHook(() =>
-    useNovel(null, { count: 0 }, novel),
+    useMemoNovel(null, { count: 0 }, novel),
   )
 
   expect(result.current[0].count).toBe(0)
@@ -152,7 +152,7 @@ test('novel should call teardown() when unmount', () => {
     }
   }
 
-  const { unmount } = renderHook(() => useNovel(null, null, novel))
+  const { unmount } = renderHook(() => useMemoNovel(null, null, novel))
 
   expect(teardown).not.toBeCalled()
   unmount()

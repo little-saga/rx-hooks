@@ -1,22 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { isObservable, Observable, Subject, Subscription } from 'rxjs'
+import { isObservable, Subject, Subscription } from 'rxjs'
+import { Novel } from './interfaces'
 import StateObservable from './StateObservable'
 
-const NO_VALUE = Symbol('no-value')
+export const NO_VALUE = Symbol('no-value')
 
-export type Novel<I, S extends object, D extends object, E> = (
-  input$: StateObservable<I>,
-  state$: StateObservable<S>,
-) =>
-  | Observable<S>
-  | {
-      nextState?: Observable<S>
-      derived?: Observable<D>
-      exports?: E
-      teardown?(): void
-    }
-
-export function useNovel<I, S extends object, D extends object, E>(
+export function useMemoNovel<I, S extends object, D extends object, E>(
   input: I,
   initialState: S,
   novel: Novel<I, S, D, E>,
